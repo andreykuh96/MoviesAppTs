@@ -11,6 +11,7 @@ interface MovieItemProps {
   poster_path: string;
   release_date: string;
   rating: number;
+  vote_average: number;
 }
 
 const MovieItemRated: React.FC<MovieItemProps> = ({
@@ -20,7 +21,14 @@ const MovieItemRated: React.FC<MovieItemProps> = ({
   poster_path,
   release_date,
   rating,
+  vote_average,
 }) => {
+  const classes = [s.rating];
+
+  if (vote_average > 3 && vote_average <= 5) classes.push(s.rating_1);
+  if (vote_average > 5 && vote_average <= 7) classes.push(s.rating_2);
+  if (vote_average > 7) classes.push(s.rating_3);
+
   return (
     <li className={s.movieItem}>
       <div className={s.img}>
@@ -28,6 +36,7 @@ const MovieItemRated: React.FC<MovieItemProps> = ({
       </div>
       <div className={s.body}>
         <h3 className={s.title}>{original_title}</h3>
+        <div className={classes.join(' ')}>{vote_average.toFixed(1)}</div>
         <div className={s.date}>{release_date ? format(parseISO(release_date), 'MMMM d, yyyy') : 'Неизвестно'}</div>
         <div className={s.genres}>
           <div className={s.genre}>Action</div>

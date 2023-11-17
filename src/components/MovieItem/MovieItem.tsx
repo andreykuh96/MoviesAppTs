@@ -70,9 +70,10 @@ const MovieItem: React.FC<MovieItemProps> = ({
           {genre_ids.map((item) => {
             return (
               <div key={item} className={s.genre}>
-                {genres?.genres.map((g) => {
-                  return g.id === item ? g.name : null;
-                })}
+                {genres &&
+                  genres.genres.map((g) => {
+                    return g.id === item ? g.name : null;
+                  })}
               </div>
             );
           })}

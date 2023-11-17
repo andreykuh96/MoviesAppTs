@@ -1,8 +1,13 @@
 import React from 'react';
 import { API_KEY } from '../App/App';
 
+interface Genres {
+  id: number;
+  name: string;
+}
+
 interface MyContextProps {
-  genres: any[];
+  genres: Genres[];
 }
 
 export const MyContext = React.createContext<MyContextProps | undefined>(undefined);
@@ -12,7 +17,7 @@ interface MyProviderProps {
 }
 
 const MyProvider: React.FC<MyProviderProps> = ({ children }) => {
-  const [genres, setGenres] = React.useState([]);
+  const [genres, setGenres] = React.useState<Genres[]>([]);
 
   const fetchGenres = () => {
     fetch(`https://api.themoviedb.org/3/genre/movie/list?language=en&api_key=${API_KEY}`)
