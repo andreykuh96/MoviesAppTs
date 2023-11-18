@@ -68,12 +68,10 @@ const MovieItem: React.FC<MovieItemProps> = ({
         <div className={s.date}>{release_date ? format(parseISO(release_date), 'MMMM d, yyyy') : 'Неизвестно'}</div>
         <div className={s.genres}>
           {genre_ids.map((item) => {
+            const matchedGenre = genres && genres.genres ? genres.genres.find((g) => g.id === item) : null;
             return (
               <div key={item} className={s.genre}>
-                {genres &&
-                  genres.genres.map((g) => {
-                    return g.id === item ? g.name : null;
-                  })}
+                {matchedGenre ? matchedGenre.name : null}
               </div>
             );
           })}
