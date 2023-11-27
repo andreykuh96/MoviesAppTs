@@ -1,21 +1,29 @@
 import React from 'react';
-import { IMoviesRated } from '../../types/types';
-import MovieItemRated from '../MovieItemRated/MovieItemRated';
-import s from './RatedMovies.module.scss';
+import MovieList from '../MovieList/MovieList';
+import { IMovies } from '../../types/types';
+import MovieService, { apiMovies } from '../../service/MovieService';
 
-interface RatedMoviesProps {
-  dataRatedMovies: IMoviesRated[];
-}
+const movieService = new MovieService();
 
-const RatedMovies: React.FC<RatedMoviesProps> = ({ dataRatedMovies }) => {
-  return (
-    <ul className={s.movieList}>
-      {dataRatedMovies.map((item) => {
-        const { ...itemProps } = item;
-        return <MovieItemRated key={item.id} {...itemProps} />;
-      })}
-    </ul>
-  );
+const RatedMovies: React.FC = () => {
+  const [dataRatedMovies, setDataRatedMovies] = React.useState<IMovies[]>([]);
+
+  const fetchRatedMovies = async () => {
+    const data = await movieService.getRatedMovies();
+    setDataRatedMovies(data);
+  };
+
+  const getGuestSession = async () => {
+    const response = await apiMovies.get('authentication/guest_session/new');
+    localStorage.setItem('session', JSON.stringify(response.data.guest_session_id));
+  };
+
+  React.useEffect(() => {
+    getGuestSession();
+    fetchRatedMovies();
+  }, []);
+
+  return <MovieList dataMovies={dataRatedMovies} />;
 };
 
 export default RatedMovies;

@@ -4,27 +4,29 @@ import MySpinner from '../MySpinner/MySpinner';
 import MyError from '../MyError/MyError';
 import MyInput from '../MyInput/MyInput';
 import MyPagination from '../MyPagination/MyPagination';
-import { API_KEY } from '../App/App';
+import MovieService, { apiMovies } from '../../service/MovieService';
+
+const movieService = new MovieService();
 
 const SearchMovies: React.FC = () => {
   const [dataMovies, setDataMovies] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
-  const [isError, setIsError] = React.useState(null);
+  const [isError, setIsError] = React.useState('');
   const [query, setQuery] = React.useState('');
   const [page, setPage] = React.useState(1);
 
   const fetchMovies = async (query: string, page: number) => {
-    setIsLoading(true);
     try {
-      const res = await fetch(
-        `https://api.themoviedb.org/3/search/movie?query=${query}&page=${page}&api_key=${API_KEY}`
-      );
-      const data = await res.json();
-      setDataMovies(data.results);
-    } catch (e: any) {
-      setIsError(e.message);
+      setIsLoading(true);
+      const data = await movieService.getMovies(query, page);
+      setIsLoading(false);
+      setDataMovies(data);
+    } catch (error) {
+      if (error instanceof Error) {
+        setIsLoading(false);
+        setIsError(error.message);
+      }
     }
-    setIsLoading(false);
   };
 
   React.useEffect(() => {

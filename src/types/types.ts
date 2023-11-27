@@ -6,7 +6,5 @@ export interface IMovies {
   release_date: string;
   vote_average: number;
   genre_ids: number[];
-}
-export interface IMoviesRated extends IMovies {
   rating: number;
 }

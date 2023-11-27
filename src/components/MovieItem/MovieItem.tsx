@@ -3,8 +3,8 @@ import s from './MovieItem.module.scss';
 import no_image from './no_image.png';
 import { format, parseISO } from 'date-fns';
 import { Rate } from 'antd';
-import { API_KEY } from '../App/App';
 import { MyContext } from '../MyProvider/MyProvider';
+import MovieService from '../../service/MovieService';
 
 interface MovieItemProps {
   id: number;
@@ -14,7 +14,10 @@ interface MovieItemProps {
   release_date: string;
   vote_average: number;
   genre_ids: number[];
+  rating: number;
 }
+
+const movieService = new MovieService();
 
 const MovieItem: React.FC<MovieItemProps> = ({
   original_title,
@@ -24,6 +27,7 @@ const MovieItem: React.FC<MovieItemProps> = ({
   id,
   genre_ids,
   vote_average,
+  rating,
 }) => {
   const [value, setValue] = React.useState(0);
   const genres = useContext(MyContext);
@@ -35,26 +39,7 @@ const MovieItem: React.FC<MovieItemProps> = ({
 
   const changeValue = (num: number) => {
     setValue(num);
-    addRating(id, num);
-  };
-
-  const addRating = (id: number, rating: number) => {
-    fetch(
-      `https://api.themoviedb.org/3/movie/${id}/rating?guest_session_id=${JSON.parse(
-        localStorage.getItem('session')!
-      )}&api_key=${API_KEY}`,
-      {
-        method: 'POST',
-        headers: {
-          accept: 'application/json',
-          'Content-Type': 'application/json;charset=utf-8',
-        },
-        body: `{"value":${rating}}`,
-      }
-    )
-      .then((response) => response.json())
-      .then((response) => console.log(response))
-      .catch((err) => console.error(err));
+    movieService.addRating(id, num);
   };
 
   return (
@@ -78,7 +63,7 @@ const MovieItem: React.FC<MovieItemProps> = ({
         </div>
         <div className={s.description}>{overview ? overview.slice(0, 100) : 'Нет описания'}</div>
         <Rate
-          value={value}
+          value={rating ? rating : value}
           onChange={changeValue}
           className={s.rate}
           count={10}

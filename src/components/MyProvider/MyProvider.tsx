@@ -1,5 +1,5 @@
 import React from 'react';
-import { API_KEY } from '../App/App';
+import MovieService from '../../service/MovieService';
 
 interface Genres {
   id: number;
@@ -16,14 +16,14 @@ interface MyProviderProps {
   children: React.ReactNode;
 }
 
+const movieService = new MovieService();
+
 const MyProvider: React.FC<MyProviderProps> = ({ children }) => {
   const [genres, setGenres] = React.useState<Genres[]>([]);
 
-  const fetchGenres = () => {
-    fetch(`https://api.themoviedb.org/3/genre/movie/list?language=en&api_key=${API_KEY}`)
-      .then((response) => response.json())
-      .then((response) => setGenres(response.genres))
-      .catch((err) => console.error(err));
+  const fetchGenres = async () => {
+    const genres = await movieService.getGenres();
+    setGenres(genres);
   };
 
   React.useEffect(() => {
